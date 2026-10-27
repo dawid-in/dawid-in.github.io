@@ -5,70 +5,246 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dawid Pachla</title>
 <meta name="description" content="iPhone and Apple Watch apps by Dawid Pachla: Challenge Track and Stride.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap" rel="stylesheet">
 <style>
-  :root { --text: #1d1d1f; --muted: #6e6e73; --bg: #fff; --card: #f5f5f7; --accent: #0071e3; }
+  :root {
+    --bg: #eef0f4; --surface: #ffffff; --ink: #1c1f26; --muted: #5d6370; --line: #d9dde5;
+    --hot: #ff3b30; --warm: #ff9f0a; --track: #e4e7ee; --link: #c2370c;
+  }
   @media (prefers-color-scheme: dark) {
-    :root { --text: #f5f5f7; --muted: #a1a1a6; --bg: #000; --card: #1c1c1e; --accent: #2997ff; }
+    :root { --bg: #14161b; --surface: #1e2128; --ink: #f1f2f5; --muted: #9aa0ad; --line: #2e323b;
+      --track: #2c3039; --link: #ff8a5c; }
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-    font: 17px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }
-  main { max-width: 760px; margin: 0 auto; padding: 56px 20px 64px; }
-  h1 { font-size: 40px; line-height: 1.1; margin: 0 0 8px; }
-  .muted { color: var(--muted); }
-  a { color: var(--accent); }
-  .app { background: var(--card); border-radius: 20px; padding: 24px; margin: 24px 0; }
-  .app header { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
-  .app img { width: 64px; height: 64px; border-radius: 14px; }
-  .app h2 { font-size: 24px; margin: 0; }
-  .app header p { margin: 0; }
-  .app ul { padding-left: 20px; margin: 12px 0; }
-  .links { display: flex; gap: 20px; flex-wrap: wrap; font-weight: 600; }
-  footer { margin-top: 48px; font-size: 14px; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 400 17px/1.6 "Bricolage Grotesque", system-ui, sans-serif; font-optical-sizing: auto; }
+  a { color: var(--link); text-underline-offset: 3px; }
+  :focus-visible { outline: 3px solid var(--warm); outline-offset: 3px; border-radius: 6px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  .top { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px 20px; padding: 28px 0; }
+  .top strong { font-weight: 800; font-size: 19px; }
+  .top nav { display: flex; gap: 18px; }
+  .top nav a { color: var(--muted); text-decoration: none; }
+  .top nav a:hover { color: var(--ink); }
+
+  .intro { padding: 56px 0 72px; max-width: 16ch; font-size: clamp(42px, 7.5vw, 88px); line-height: .98;
+    font-weight: 800; letter-spacing: -.035em; margin: 0; }
+  .intro + p { margin: -48px 0 72px; max-width: 46ch; color: var(--muted); font-size: 19px; }
+
+  .app { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center;
+    padding: 72px 0; border-top: 1px solid var(--line); }
+  .app .copy { max-width: 46ch; }
+  .app header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .app header img { width: 60px; height: 60px; border-radius: 14px; }
+  .app h2 { font-size: 34px; line-height: 1.05; letter-spacing: -.02em; margin: 0; }
+  .app header p { margin: 2px 0 0; color: var(--muted); }
+  .app ul { padding-left: 20px; margin: 16px 0 24px; }
+  .app li { margin: 4px 0; }
+  .links { display: flex; gap: 22px; flex-wrap: wrap; font-weight: 600; margin: 0; }
+  .demo { background: var(--surface); border-radius: 28px; padding: 28px; }
+  .hint { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+
+  /* Challenge Track demo */
+  .ring-row { display: flex; align-items: center; gap: 24px; }
+  .ring { width: 168px; height: 168px; flex: none; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-linecap: round; transition: stroke-dashoffset .35s ease; }
+  .ring .bg { stroke: var(--track); }
+  .stats { margin: 0; }
+  .stats dt { font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: -.02em; }
+  .stats dd { margin: 4px 0 14px; color: var(--muted); font-size: 15px; }
+  .bars { display: flex; align-items: flex-end; gap: 3px; height: 72px; margin: 24px 0 8px; position: relative; }
+  .bars span { flex: 1; background: var(--track); border-radius: 3px 3px 1px 1px; transition: background .2s; }
+  .bars span.hit { background: linear-gradient(var(--warm), var(--hot)); }
+  .bars span.miss { background: var(--muted); opacity: .45; }
+  .bars span.today { outline: 2px solid var(--ink); outline-offset: 1px; }
+  .goal { position: absolute; left: 0; right: 0; border-top: 1.5px dashed var(--muted); }
+  input[type=range] { width: 100%; accent-color: var(--hot); margin: 12px 0 0; }
+
+  /* Stride demo */
+  .tabs { display: inline-flex; background: var(--bg); border-radius: 999px; padding: 4px; margin-bottom: 16px; }
+  .tabs button { font: inherit; font-size: 15px; font-weight: 600; border: 0; background: none; color: var(--muted);
+    padding: 7px 16px; border-radius: 999px; cursor: pointer; }
+  .tabs button[aria-pressed=true] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgb(0 0 0 / .12); }
+  .board { list-style: none; margin: 0; padding: 0; }
+  .board li { display: grid; grid-template-columns: 32px 1fr auto; align-items: center; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .board li:last-child { border-bottom: 0; }
+  .board .rank { font-weight: 800; font-size: 20px; color: var(--muted); }
+  .board li:first-child .rank { color: var(--hot); }
+  .board small { display: block; color: var(--muted); font-size: 14px; }
+  .board .val { font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums; }
+
+  footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--muted); font-size: 15px; }
+
+  @media (max-width: 820px) {
+    .app { grid-template-columns: 1fr; gap: 32px; padding: 56px 0; }
+    .app.flip .demo { order: 2; }
+    .intro { padding-top: 32px; }
+  }
+  @media (max-width: 420px) {
+    .demo { padding: 20px; border-radius: 22px; }
+    .ring { width: 128px; height: 128px; }
+    .ring-row { gap: 16px; }
+    .stats dt { font-size: 32px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
-<main>
-  <h1>Dawid Pachla</h1>
-  <p class="muted">Small, private apps for iPhone and Apple Watch. No accounts, no ads, no tracking.</p>
+<div class="wrap">
+  <div class="top">
+    <strong>Dawid Pachla</strong>
+    <nav>
+      <a href="#challenge-track">Challenge Track</a>
+      <a href="#stride">Stride</a>
+      <a href="mailto:contact@dawid.in">Contact</a>
+    </nav>
+  </div>
+
+  <h1 class="intro">Small fitness apps that keep your data yours.</h1>
+  <p>For iPhone and Apple Watch, built on Apple Health. No accounts, no ads, no tracking, nothing sent to a server.</p>
 
   <section class="app" id="challenge-track">
-    <header>
-      <img src="challenge-track/icon.png" alt="">
-      <div><h2>Challenge Track</h2><p class="muted">Your monthly activity challenge, at a glance</p></div>
-    </header>
-    <p>Every month the Fitness app sets you a personal activity challenge. Enter it once and Challenge Track
-      works out your progress from Apple Health, on your iPhone, widgets and Apple Watch.</p>
-    <ul>
-      <li>Progress ring for the month, with today inside it, plus what's left and days you can still miss</li>
-      <li>Daily amounts, monthly totals, daily averages, ring goals and workout counts</li>
-      <li>Day by Day chart, reminders and a history of past months with your streak</li>
-      <li>Home Screen and Lock Screen widgets, watch app and complications</li>
-    </ul>
-    <p class="links"><a href="challenge-track/privacy.html">Privacy Policy</a> <a href="mailto:contact@dawid.in">Support</a></p>
+    <div class="copy">
+      <header>
+        <img src="challenge-track/icon.png" alt="">
+        <div><h2>Challenge Track</h2><p>Your monthly activity challenge, at a glance</p></div>
+      </header>
+      <p>Every month the Fitness app sets you a personal activity challenge. Enter it once and Challenge Track
+        works out your progress from Apple Health, on your iPhone, widgets and Apple Watch.</p>
+      <ul>
+        <li>What's left, days remaining and how many days you can still miss</li>
+        <li>Daily amounts, monthly totals, daily averages, ring goals and workout counts</li>
+        <li>Reminders and a history of past months with your streak</li>
+        <li>Home Screen and Lock Screen widgets, watch app and complications</li>
+      </ul>
+      <p class="links"><a href="challenge-track/privacy.html">Privacy policy</a><a href="mailto:contact@dawid.in">Support</a></p>
+    </div>
+
+    <div class="demo" aria-label="Example challenge">
+      <p class="hint">Burn at least 720 kcal a day, 14 times this month. Drag through the month.</p>
+      <div class="ring-row">
+        <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+          <defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="var(--hot)"/><stop offset="1" stop-color="var(--warm)"/></linearGradient></defs>
+          <circle class="bg" cx="50" cy="50" r="42" stroke-width="11"/>
+          <circle id="month" cx="50" cy="50" r="42" stroke-width="11" stroke="url(#g)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+          <circle class="bg" cx="50" cy="50" r="26" stroke-width="9"/>
+          <circle id="today" cx="50" cy="50" r="26" stroke-width="9" stroke="var(--warm)" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"/>
+        </svg>
+        <dl class="stats" aria-live="polite">
+          <dt id="done"></dt><dd id="done-l"></dd>
+          <dt id="miss"></dt><dd>days you can still miss</dd>
+        </dl>
+      </div>
+      <div class="bars" id="bars" aria-hidden="true"><div class="goal" id="goal"></div></div>
+      <label class="hint" for="day" id="day-l"></label>
+      <input type="range" id="day" min="1" max="31" value="18">
+    </div>
   </section>
 
-  <section class="app" id="stride">
-    <header>
-      <img src="stride/icon.png" alt="">
-      <div><h2>Stride</h2><p class="muted">Personal leaderboards for every walk, run and workout</p></div>
-    </header>
-    <p>Stride ranks your activity from Apple Health: your longest runs, fastest paces, biggest days and
-      today against your best.</p>
-    <ul>
-      <li>Top 10 and Top 100 workouts by distance, duration, calories or pace, with place and route map</li>
-      <li>Daily steps, calories, distance and exercise against your best day ever</li>
-      <li>Apple Watch app and Home Screen and Lock Screen widgets</li>
-      <li>Optional Garmin Connect CSV import, merged with your Health workouts</li>
-    </ul>
-    <p class="links"><a href="stride/privacy.html">Privacy Policy</a> <a href="stride/">Support</a></p>
-  </section>
+  <section class="app flip" id="stride">
+    <div class="demo" aria-label="Example leaderboard">
+      <div class="tabs" role="group" aria-label="Rank by">
+        <button data-k="km" aria-pressed="true">Distance</button>
+        <button data-k="min" aria-pressed="false">Duration</button>
+        <button data-k="pace" aria-pressed="false">Pace</button>
+      </div>
+      <ol class="board" id="board"></ol>
+    </div>
 
-  <footer class="muted">
-    <a href="https://www.linkedin.com/in/dawid-pachla-b9589731/">LinkedIn</a> ·
-    <a href="https://www.facebook.com/dpachla">Facebook</a> ·
+    <div class="copy">
+      <header>
+        <img src="stride/icon.png" alt="">
+        <div><h2>Stride</h2><p>Personal leaderboards for every walk, run and workout</p></div>
+      </header>
+      <p>Stride ranks your activity from Apple Health: your longest runs, fastest paces, biggest days and
+        today against your best.</p>
+      <ul>
+        <li>Top 10 and Top 100 by distance, duration, calories or pace, with place and route map</li>
+        <li>Daily steps, calories, distance and exercise against your best day ever</li>
+        <li>Apple Watch app and Home Screen and Lock Screen widgets</li>
+        <li>Optional Garmin Connect import, merged with your Health workouts</li>
+      </ul>
+      <p class="links"><a href="stride/privacy.html">Privacy policy</a><a href="stride/">Support</a></p>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <a href="https://www.linkedin.com/in/dawid-pachla-b9589731/">LinkedIn</a>&ensp;
+    <a href="https://www.facebook.com/dpachla">Facebook</a>&ensp;
     <a href="mailto:contact@dawid.in">contact@dawid.in</a>
-  </footer>
-</main>
+  </div>
+</footer>
+
+<script>
+// Challenge Track demo: a made-up month of active calories against a 720 kcal day.
+const kcal = [540,760,810,430,725,900,610,780,690,1020,750,380,820,730,560,880,790,640,940,710,770,500,860,735,620,980,700,790,450,830,760];
+const GOAL = 720, TIMES = 14, MAX = 1050;
+const bars = document.getElementById('bars'), day = document.getElementById('day');
+document.getElementById('goal').style.bottom = GOAL / MAX * 100 + '%';
+const spans = kcal.map(v => { const s = document.createElement('span'); s.style.height = v / MAX * 100 + '%'; bars.append(s); return s; });
+const $ = id => document.getElementById(id);
+
+function render() {
+  const d = +day.value;
+  const done = kcal.slice(0, d).filter(v => v >= GOAL).length;
+  const left = Math.max(TIMES - done, 0), remaining = 31 - d;
+  spans.forEach((s, i) => s.className = i >= d ? '' : (kcal[i] >= GOAL ? 'hit' : 'miss') + (i === d - 1 ? ' today' : ''));
+  $('month').style.strokeDashoffset = 100 - Math.min(done / TIMES, 1) * 100;
+  $('today').style.strokeDashoffset = 100 - Math.min(kcal[d - 1] / GOAL, 1) * 100;
+  $('done').textContent = left ? left : 'Done';
+  $('done-l').textContent = left ? `${left === 1 ? 'day' : 'days'} left to reach ${TIMES}` : `${TIMES} days reached`;
+  $('miss').textContent = left ? Math.max(remaining - left, 0) : '–';
+  $('day-l').textContent = `Day ${d} of 31, today ${kcal[d - 1]} kcal`;
+}
+day.addEventListener('input', render);
+render();
+
+// Stride demo: example workouts, re-ranked with a FLIP animation.
+const workouts = [
+  { name: 'Half marathon', place: 'Hyde Park, London', km: 21.1, min: 118 },
+  { name: 'Evening tempo run', place: 'Regent’s Canal', km: 8.4, min: 39 },
+  { name: 'Coastal walk', place: 'Seven Sisters', km: 16.3, min: 241 },
+  { name: 'Parkrun', place: 'Victoria Park', km: 5.0, min: 22 },
+  { name: 'Long Sunday run', place: 'Richmond Park', km: 15.2, min: 84 },
+];
+workouts.forEach(w => w.pace = w.min / w.km);
+const fmt = {
+  km: w => w.km.toFixed(1) + ' km',
+  min: w => `${Math.floor(w.min / 60)}:${String(w.min % 60).padStart(2, '0')} h`,
+  pace: w => `${Math.floor(w.pace)}:${String(Math.round(w.pace % 1 * 60)).padStart(2, '0')} /km`,
+};
+const board = document.getElementById('board');
+const rows = workouts.map(w => {
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="rank"></span><span>${w.name}<small>${w.place}</small></span><span class="val"></span>`;
+  li.w = w; board.append(li); return li;
+});
+const still = matchMedia('(prefers-reduced-motion: reduce)');
+
+function rank(k, animate = true) {
+  const before = new Map(rows.map(r => [r, r.getBoundingClientRect().top]));
+  rows.sort((a, b) => k === 'pace' ? a.w.pace - b.w.pace : b.w[k] - a.w[k]).forEach((r, i) => {
+    r.querySelector('.rank').textContent = i + 1;
+    r.querySelector('.val').textContent = fmt[k](r.w);
+    board.append(r);
+  });
+  if (!animate || still.matches) return;
+  rows.forEach(r => {
+    const dy = before.get(r) - r.getBoundingClientRect().top;
+    if (dy) r.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  });
+}
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  rank(b.dataset.k);
+}));
+rank('km', false);
+</script>
 </body>
 </html>
